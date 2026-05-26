@@ -1,0 +1,75 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // -------------------------------------------------------------------------
+    // HELPERS
+    // -------------------------------------------------------------------------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.uid == "d0W2QF71NcXSCeF3qQxuVrRFqqx1" || 
+        request.auth.token.email == "digitaloromiya@gmail.com"
+      );
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // -------------------------------------------------------------------------
+    // COLLECTIONS
+    // -------------------------------------------------------------------------
+
+    // COURSES: Publicly readable
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // USERS: Owner or Admin
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && (isOwner(userId) || isAdmin());
+    }
+
+    // ENROLLMENTS: Owner or Admin
+    match /enrollments/{enrollmentId} {
+      allow read: if isSignedIn() && (isAdmin() || (resource != null && resource.data.userId == request.auth.uid));
+      allow write: if isSignedIn() && (isAdmin() || (request.resource != null && request.resource.data.userId == request.auth.uid));
+    }
+
+    // ASSIGNMENTS: Owner or Admin
+    match /assignments/{assignmentId} {
+      allow read: if isSignedIn() && (isAdmin() || (resource != null && resource.data.userId == request.auth.uid));
+      allow create: if isSignedIn() && (isAdmin() || (request.resource != null && request.resource.data.userId == request.auth.uid));
+      allow update, delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // CERTIFICATES: Publicly readable
+    match /certificates/{certificateId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // SUBMISSIONS: Public create, Admin read
+    match /submissions/{submissionId} {
+      allow create: if true;
+      allow read: if isAdmin();
+    }
+
+    // GOVERNMENT RECORDS: Public read, Admin write
+    match /government_records/{recordId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ADMINS: Signed-in read, Admin write
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}

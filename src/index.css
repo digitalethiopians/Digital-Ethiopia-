@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  
+  --color-brand: var(--color-emerald-600);
+  --color-brand-dark: var(--color-emerald-950);
+  --color-brand-light: var(--color-emerald-50);
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 font-sans antialiased;
+  }
+}
+
+@layer components {
+  .bento-card {
+    @apply bg-white border border-slate-200 rounded-[1.25rem] p-6 flex flex-col transition-all duration-300;
+  }
+  
+  .bento-grid {
+    @apply grid grid-cols-1 md:grid-cols-4 gap-4;
+  }
+}
