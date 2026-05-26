@@ -4,7 +4,7 @@ import { getFirestore, enableMultiTabIndexedDbPersistence, doc, getDocFromServer
 import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 
 // Enable persistence
 enableMultiTabIndexedDbPersistence(db).catch((err) => {

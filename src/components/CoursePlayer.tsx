@@ -20,7 +20,61 @@ export const CoursePlayer = () => {
   const [completedLessonIds, setCompletedLessonIds] = useState<string[]>([]);
   const [enrollment, setEnrollment] = useState<any>(null);
 
+  // AI Quiz modules states
+  const [activeQuiz, setActiveQuiz] = useState<{
+    question: string;
+    options: string[];
+    correctAnswer: string;
+    explanation: string;
+  } | null>(null);
+  const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
+  const [selectedQuizAnswer, setSelectedQuizAnswer] = useState<string | null>(null);
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [quizError, setQuizError] = useState<string | null>(null);
+
   const course = SAMPLE_COURSES.find(c => c.id === id);
+
+  useEffect(() => {
+    setActiveQuiz(null);
+    setIsGeneratingQuiz(false);
+    setSelectedQuizAnswer(null);
+    setQuizSubmitted(false);
+    setQuizError(null);
+  }, [activeLessonId]);
+
+  const generateLessonQuiz = async (lesson: any) => {
+    setIsGeneratingQuiz(true);
+    setQuizError(null);
+    setSelectedQuizAnswer(null);
+    setQuizSubmitted(false);
+    setActiveQuiz(null);
+    try {
+      const res = await fetch("/api/quiz/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          courseTitle: course?.title,
+          lessonTitle: lesson.title,
+          courseDescription: course?.description
+        })
+      });
+      if (!res.ok) throw new Error("Failed to generate quiz");
+      const quizData = await res.json();
+      setActiveQuiz(quizData);
+    } catch (err: any) {
+      console.error(err);
+      setQuizError("Could not load AI Quiz. Please try again.");
+    } finally {
+      setIsGeneratingQuiz(false);
+    }
+  };
+
+  const handleNextLesson = () => {
+    setActiveQuiz(null);
+    if (currentLessonIndex < lessons.length - 1) {
+      setActiveLessonId(lessons[currentLessonIndex + 1].id);
+    }
+  };
 
   useEffect(() => {
     if (location.state && (location.state as any).activeLessonId) {
@@ -60,32 +114,8 @@ export const CoursePlayer = () => {
       await updateEnrollmentProgress(user.uid, course.id, newProgress, newCompletedIds);
       setCompletedLessonIds(newCompletedIds);
 
-      const isAllCompleted = newCompletedIds.length === lessons.length;
-      
-      if (isAllCompleted) {
-        setCompletionType('course');
-        setShowSuccess(true);
-        confetti({
-          particleCount: 150,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#10b981', '#3b82f6', '#ffffff']
-        });
-        
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 4000);
-      } else {
-        setCompletionType('lesson');
-        setShowSuccess(true);
-        setTimeout(() => {
-          setShowSuccess(false);
-          // Auto-advance if not at the end
-          if (currentLessonIndex < lessons.length - 1) {
-            setActiveLessonId(lessons[currentLessonIndex + 1].id);
-          }
-        }, 1500);
-      }
+      // Trigger quiz generation immediately upon clicking Complete & Next
+      await generateLessonQuiz(activeLesson);
     } catch (e) {
       console.error('Failed to update progress:', e);
     } finally {
@@ -277,15 +307,166 @@ export const CoursePlayer = () => {
 
         <div className="flex-1 overflow-y-auto">
           <div className="mx-auto max-w-5xl p-8">
-            <div className="aspect-video w-full overflow-hidden rounded-3xl bg-slate-900 shadow-2xl relative flex items-center justify-center group">
-               <div className="absolute inset-0 bg-slate-800 animate-pulse" />
-               <div className="relative z-10 flex flex-col items-center gap-4 text-center">
-                  <PlayCircle className="h-20 w-20 text-emerald-500 opacity-80 group-hover:scale-110 group-hover:opacity-100 transition-all cursor-pointer" />
-                  <div>
-                    <h3 className="text-lg font-bold text-white">{activeLesson?.title}</h3>
-                    <p className="text-xs text-slate-500 uppercase tracking-widest mt-1">Ready to start</p>
-                  </div>
-               </div>
+            <div className={`aspect-video w-full overflow-hidden rounded-3xl bg-slate-900 shadow-2xl relative flex items-center justify-center group ${activeQuiz || isGeneratingQuiz ? 'border border-emerald-500/20' : ''}`}>
+               {isGeneratingQuiz ? (
+                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-slate-950/90 z-10 backdrop-blur-sm">
+                   <div className="relative mb-4">
+                     <motion.div
+                       animate={{ rotate: 360 }}
+                       transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+                       className="absolute -inset-2 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full blur opacity-30 animate-pulse"
+                     />
+                     <div className="relative h-12 w-12 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 shadow-inner">
+                       <Sparkles className="h-5 w-5 text-emerald-400 animate-pulse" />
+                     </div>
+                   </div>
+                   <h3 className="text-base font-bold text-white mb-1">Generating AI Quiz...</h3>
+                   <p className="text-xs text-slate-400 font-medium max-w-xs">Digital Ethiopia AI is analyzing the lesson to craft a comprehension question...</p>
+                 </div>
+               ) : activeQuiz ? (
+                 <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-8 bg-slate-950/95 z-10">
+                   {/* Header */}
+                   <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                     <div className="flex items-center gap-2">
+                       <Sparkles className="h-4 w-4 text-emerald-400" />
+                       <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">AI Comprehension Quiz</span>
+                     </div>
+                     <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Lesson {currentLessonIndex + 1} of {lessons.length}</span>
+                   </div>
+
+                   {/* Body: Question */}
+                   <div className="my-auto py-2">
+                     <h3 className="text-sm sm:text-base font-bold text-white leading-snug">
+                       {activeQuiz.question}
+                     </h3>
+                     
+                     {/* Options Grid */}
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                       {activeQuiz.options.map((option, idx) => {
+                         const isSelected = selectedQuizAnswer === option;
+                         const isCorrect = option === activeQuiz.correctAnswer;
+                         let optionBg = "border-white/5 bg-white/5 text-slate-300 hover:bg-white/10 hover:border-slate-700";
+                         if (quizSubmitted) {
+                           if (isCorrect) {
+                             optionBg = "border-emerald-500/50 bg-emerald-500/10 text-emerald-300";
+                           } else if (isSelected) {
+                             optionBg = "border-red-500/50 bg-red-500/10 text-red-300";
+                           } else {
+                             optionBg = "border-white/5 bg-white/2 text-slate-500 opacity-60";
+                           }
+                         } else if (isSelected) {
+                           optionBg = "border-emerald-500 bg-emerald-500/10 text-emerald-300";
+                         }
+
+                         return (
+                           <button
+                             key={idx}
+                             disabled={quizSubmitted}
+                             onClick={() => setSelectedQuizAnswer(option)}
+                             className={`w-full rounded-xl border p-3.5 text-left font-medium text-xs transition-all duration-200 cursor-pointer ${optionBg}`}
+                           >
+                             <div className="flex items-center gap-2">
+                               <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black/40 font-bold text-[9px] text-white">
+                                 {String.fromCharCode(65 + idx)}
+                               </span>
+                               <span>{option}</span>
+                             </div>
+                           </button>
+                         );
+                       })}
+                     </div>
+                   </div>
+
+                   {/* Footer */}
+                   <div className="border-t border-white/5 pt-3 flex flex-col sm:flex-row items-center justify-between gap-4">
+                     {quizSubmitted ? (
+                       <div className="flex-1 text-left">
+                         <p className={`text-xs font-bold uppercase tracking-wider ${
+                           selectedQuizAnswer === activeQuiz.correctAnswer ? "text-emerald-400" : "text-red-400"
+                         }`}>
+                           {selectedQuizAnswer === activeQuiz.correctAnswer ? "✓ Correct!" : "✗ Incorrect"}
+                         </p>
+                         <p className="text-[10px] text-slate-400 mt-0.5 font-medium leading-relaxed">
+                           {activeQuiz.explanation}
+                         </p>
+                       </div>
+                     ) : (
+                       <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wide">
+                         Choose the correct option to verify your understanding.
+                       </div>
+                     )}
+
+                     <div className="flex gap-2 self-end sm:self-auto shrink-0">
+                       {!quizSubmitted ? (
+                         <button
+                           onClick={() => {
+                             if (!selectedQuizAnswer) return;
+                             setQuizSubmitted(true);
+                             if (selectedQuizAnswer === activeQuiz.correctAnswer) {
+                               confetti({
+                                 particleCount: 50,
+                                 spread: 40,
+                                 origin: { y: 0.8 }
+                               });
+                             }
+                           }}
+                           disabled={!selectedQuizAnswer}
+                           className="flex h-10 items-center justify-center rounded-xl bg-emerald-600 px-6 font-bold text-xs uppercase tracking-widest text-white hover:bg-emerald-700 transition hover:scale-105 active:scale-95 disabled:opacity-40 disabled:scale-100 cursor-pointer"
+                         >
+                           Submit Answer
+                         </button>
+                       ) : (
+                         selectedQuizAnswer === activeQuiz.correctAnswer ? (
+                           <button
+                             onClick={() => {
+                               const isAllCompleted = completedLessonIds.length === lessons.length;
+                               if (isAllCompleted) {
+                                 setCompletionType('course');
+                                 setShowSuccess(true);
+                                 confetti({
+                                   particleCount: 150,
+                                   spread: 70,
+                                   origin: { y: 0.6 },
+                                   colors: ['#10b981', '#3b82f6', '#ffffff']
+                                 });
+                                 setTimeout(() => {
+                                   navigate('/dashboard');
+                                 }, 4000);
+                               } else {
+                                 handleNextLesson();
+                               }
+                             }}
+                             className="flex h-10 items-center justify-center rounded-xl bg-emerald-600 px-6 font-bold text-xs uppercase tracking-widest text-white hover:bg-emerald-700 transition hover:scale-105 active:scale-95 cursor-pointer"
+                           >
+                             {currentLessonIndex === lessons.length - 1 ? 'Finish Course' : 'Next Lesson'}
+                           </button>
+                         ) : (
+                           <button
+                             onClick={() => {
+                               setQuizSubmitted(false);
+                               setSelectedQuizAnswer(null);
+                             }}
+                             className="flex h-10 items-center justify-center rounded-xl bg-slate-800 px-6 font-bold text-xs uppercase tracking-widest text-white hover:bg-slate-700 transition hover:scale-105 active:scale-95 border border-white/5 cursor-pointer"
+                           >
+                             Try Again
+                           </button>
+                         )
+                       )}
+                     </div>
+                   </div>
+                 </div>
+               ) : (
+                 <>
+                   <div className="absolute inset-0 bg-slate-800 animate-pulse" />
+                   <div className="relative z-10 flex flex-col items-center gap-4 text-center">
+                      <PlayCircle className="h-20 w-20 text-emerald-500 opacity-80 group-hover:scale-110 group-hover:opacity-100 transition-all cursor-pointer" />
+                      <div>
+                        <h3 className="text-lg font-bold text-white">{activeLesson?.title}</h3>
+                        <p className="text-xs text-slate-500 uppercase tracking-widest mt-1">Ready to start</p>
+                      </div>
+                   </div>
+                 </>
+               )}
             </div>
 
             <div className="mt-12">
