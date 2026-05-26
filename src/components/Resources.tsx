@@ -79,6 +79,16 @@ export const Resources = () => {
         { label: "W3Schools Tutorial", href: "https://www.w3schools.com" },
         { label: "MDN Web Docs", href: "https://developer.mozilla.org" }
       ]
+    },
+    {
+      title: "Grade 12 National Exam Prep",
+      icon: GraduationCap,
+      links: [
+        { label: "MoE Exam Prep Guidelines 2026", href: "https://moe.gov.et" },
+        { label: "Maths Practice Solved Papers", href: "https://moe.gov.et" },
+        { label: "Scholastic Aptitude Puzzles Bank", href: "https://moe.gov.et" },
+        { label: "Grade 12 English Prep Syllabi", href: "https://moe.gov.et" }
+      ]
     }
   ];
 
@@ -100,7 +110,7 @@ export const Resources = () => {
           </p>
         </div>
 
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
           {categories.map((cat, idx) => (
             <motion.div
               key={idx}

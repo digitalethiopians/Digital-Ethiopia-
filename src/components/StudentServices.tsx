@@ -81,6 +81,13 @@ export const StudentServices = () => {
       icon: ClipboardList,
       path: "/forms",
       color: "orange"
+    },
+    {
+      title: "National Exam Portal",
+      description: "Accelerate exam preparation under the official Ethernet 2026 grade 12 mocks.",
+      icon: GraduationCap,
+      path: "/national-exam",
+      color: "emerald"
     }
   ];
 

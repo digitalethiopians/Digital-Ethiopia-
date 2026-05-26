@@ -14,6 +14,7 @@ export const translations = {
     navServices: "Services",
     navResources: "Resources",
     navAdmin: "Admin",
+    navExamPortal: "Exam Portal (MoE)",
     footerInitiative: "Digital Ethiopia Initiative",
     footerDescription: "Modernizing Universities and Vocational Education across Ethiopia and the world through digitalization, ensuring global standards.",
   },
@@ -31,6 +32,7 @@ export const translations = {
     navServices: "Tajaajiloota",
     navResources: "Meeshaalee",
     navAdmin: "Bulchiinsa",
+    navExamPortal: "Moonaa Qormaataa MoE",
     footerInitiative: "Inisheetivii Itoophiyaa Diijitaalaa",
     footerDescription: "Yuunivarsiitiiwwan fi Barnoota Teeknikaa fi Terminaalaa Itoophiyaa fi addunyaa keessatti diijitalla gochuun qulqullina barnootaa mirkaneessuu.",
   }

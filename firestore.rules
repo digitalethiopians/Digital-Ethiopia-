@@ -12,7 +12,8 @@ service cloud.firestore {
     function isAdmin() {
       return isSignedIn() && (
         request.auth.uid == "d0W2QF71NcXSCeF3qQxuVrRFqqx1" || 
-        request.auth.token.email == "digitaloromiya@gmail.com"
+        request.auth.token.email == "digitaloromiya@gmail.com" ||
+        request.auth.token.email == "digitalethiopians@gmail.com"
       );
     }
 

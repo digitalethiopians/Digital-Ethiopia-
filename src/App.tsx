@@ -18,6 +18,7 @@ import { GovernmentDigitalization } from './components/GovernmentDigitalization'
 import { VerifyCertificate } from './components/VerifyCertificate';
 import { AIChatbot } from './components/AIChatbot';
 import { StudentServices } from './components/StudentServices';
+import { NationalExamPortal } from './components/NationalExamPortal';
 import { SchoolForms } from './components/SchoolForms';
 import { Assignments } from './components/Assignments';
 import { Resources } from './components/Resources';
@@ -33,7 +34,7 @@ const AppContent = () => {
     const handleSync = async () => {
       if (user) {
         await syncUser(user);
-        if (user.email === 'digitaloromiya@gmail.com' || user.uid === 'd0W2QF71NcXSCeF3qQxuVrRFqqx1') {
+        if (user.email === 'digitaloromiya@gmail.com' || user.email === 'digitalethiopians@gmail.com' || user.uid === 'd0W2QF71NcXSCeF3qQxuVrRFqqx1') {
           await seedCourses();
         }
       }
@@ -91,6 +92,7 @@ const AppContent = () => {
             user ? <Dashboard /> : <Navigate to="/" />
           } />
           <Route path="/services" element={<StudentServices />} />
+          <Route path="/national-exam" element={<NationalExamPortal />} />
           <Route path="/forms" element={<SchoolForms />} />
           <Route path="/forms/:type" element={<SchoolForms />} />
           <Route path="/assignments" element={

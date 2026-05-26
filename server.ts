@@ -97,6 +97,27 @@ Provide exactly one question checking comprehension, 4 multiple choice options, 
     }
   });
 
+  app.post("/api/exam/explain", async (req, res) => {
+    const { question, options, correctAnswer, selectedAnswer, subject } = req.body;
+    try {
+      const ai = getAIInstance();
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: `Explain this exam question from the Digital Ethiopia ${subject || "National"} Practice Examination:
+Question: ${question}
+Options: ${options ? options.join(", ") : ""}
+Correct Answer: ${correctAnswer}
+Student's Selected Answer: ${selectedAnswer}
+
+Provide a polite, encouraging, step-by-step logical proof and explanation of why "${correctAnswer}" is correct, and why other options might lead to errors. Speak directly to the student in helpful mentor tones.`
+      });
+      res.json({ explanation: response.text || "No response received from AI." });
+    } catch (e: any) {
+      console.error("AI Exam Explanation failed:", e.message || e);
+      res.json({ explanation: `The correct answer is indeed "${correctAnswer}". Under standard exam criteria, this option represents the most mathematically and logically accurate response for ${subject || "Grade 12 Level Exam Prep"}. Check standard formulae or textbooks to review the corresponding theories.` });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

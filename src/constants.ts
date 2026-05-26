@@ -171,5 +171,67 @@ export const SAMPLE_COURSES: Course[] = [
       { id: 'l21', title: 'Color Theory & Emotional Impact', duration: '35m' },
       { id: 'l22', title: 'Layout Principles for Web & Print', duration: '40m' },
     ]
+  },
+  {
+    id: 'course_g12_math',
+    title: 'Grade 12 Mathematics National Exam Prep (2026)',
+    description: 'Master Sequences, Calculus, and Algebra to ace the 2026 National Examination.',
+    longDescription: 'Prepare intensively for the Ethiopian Grade 12 Natural/Social Science Mathematics examination. Includes step-by-step solutions to past papers and 2026 prediction questions.',
+    thumbnail: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&auto=format&fit=crop&q=60',
+    instructor: 'Dr. Alula G.',
+    instructorBio: 'Distinguished Professor of Mathematics with over 15 years preparing students for national and university entrance examinations in Ethiopia.',
+    instructorPhoto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=60',
+    category: 'Academic',
+    level: 'Advanced',
+    prerequisites: ['Completed grade 11 Mathematics'],
+    duration: '8 Weeks',
+    lessons: [
+      { id: 'lg12m1', title: 'Understanding the 2026 Exam Structure & Marking Scheme', duration: '20m' },
+      { id: 'lg12m2', title: 'Sequences and Series: Arithmetic & Geometric Questions', duration: '35m' },
+      { id: 'lg12m3', title: 'Limits and Continuity: Crucial Shortcuts & Theorems', duration: '40m' },
+      { id: 'lg12m4', title: 'Derivatives & Calculus Applications in Exam Context', duration: '45m' },
+      { id: 'lg12m5', title: 'Integrals and Coordinate Geometry Solved Problems', duration: '50m' }
+    ]
+  },
+  {
+    id: 'course_g12_aptitude',
+    title: 'Scholastic Aptitude Test Exam Trainer (2026)',
+    description: 'Logical, mathematical, and spatial puzzles training for Grade 12.',
+    longDescription: 'Get the highest possible score in your Scholastic Aptitude Test. Learn core shortcuts for word relationship, analogy, diagram puzzles, data sufficiency, and analytical logic puzzles.',
+    thumbnail: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=800&auto=format&fit=crop&q=60',
+    instructor: 'Prof. Kibrom T.',
+    instructorBio: 'Cognitive Science trainer and academic researcher specializing in logic, cognitive testing, and aptitude coaching at multiple major institutions.',
+    instructorPhoto: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop&q=60',
+    category: 'Academic',
+    level: 'Intermediate',
+    prerequisites: ['Problem-solving ability'],
+    duration: '6 Weeks',
+    lessons: [
+      { id: 'lg12a1', title: 'Aptitude Test Layout and Question Distribution', duration: '25m' },
+      { id: 'lg12a2', title: 'Verbal Aptitude: Synonyms, Antonyms, and Analogies', duration: '40m' },
+      { id: 'lg12a3', title: 'Mathematical & Abstract Logical Puzzles', duration: '45m' },
+      { id: 'lg12a4', title: 'Coding-Decoding and Spatial Visualizations', duration: '35m' },
+      { id: 'lg12a5', title: 'Data Sufficiency and Logic Deduction Methods', duration: '50m' }
+    ]
+  },
+  {
+    id: 'course_g12_english',
+    title: 'Grade 12 English Language Exam Prep (2026)',
+    description: 'Grammar, Reading Comprehension, and Vocabulary prep for the 2026 National Exam.',
+    longDescription: 'Accelerate your English proficiency and exam strategy. Learn to quickly analyze reading passages, master challenging grammar tenses, matching questions, and paragraph organization.',
+    thumbnail: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&auto=format&fit=crop&q=60',
+    instructor: 'Tigist M.',
+    instructorBio: 'EFL Specialist and expert curriculum developer preparing high school students to achieve maximum results on national examinations.',
+    instructorPhoto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=60',
+    category: 'Academic',
+    level: 'Intermediate',
+    prerequisites: ['Secondary school English basics'],
+    duration: '6 Weeks',
+    lessons: [
+      { id: 'lg12e1', title: 'Crucial Grammar rules and Tense Patterns on Exams', duration: '25m' },
+      { id: 'lg12e2', title: 'Reading Comprehension & Speed-Reading Strategies', duration: '35m' },
+      { id: 'lg12e3', title: 'Vocabulary, Word Substitution, and Spelling Tricks', duration: '30m' },
+      { id: 'lg12e4', title: 'Social Formulas, Communication Skills, and Paragraph Ordering', duration: '40m' }
+    ]
   }
 ];

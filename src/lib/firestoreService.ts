@@ -53,7 +53,7 @@ export const syncUser = async (user: any) => {
   if (!user) return;
   const userRef = doc(db, 'users', user.uid);
   try {
-    const isMaster = user.uid === "d0W2QF71NcXSCeF3qQxuVrRFqqx1" || user.email === "digitaloromiya@gmail.com";
+    const isMaster = user.uid === "d0W2QF71NcXSCeF3qQxuVrRFqqx1" || user.email === "digitaloromiya@gmail.com" || user.email === "digitalethiopians@gmail.com";
     console.log('[Auth] Syncing user:', user.uid, 'isMaster:', isMaster);
     
     // Sync basic user info
@@ -144,7 +144,7 @@ export const checkAdminStatus = async (user: any) => {
   const userEmail = user.email;
   
   // Quick check for the master admin UID or Email
-  const isMaster = userId === "d0W2QF71NcXSCeF3qQxuVrRFqqx1" || userEmail === "digitaloromiya@gmail.com";
+  const isMaster = userId === "d0W2QF71NcXSCeF3qQxuVrRFqqx1" || userEmail === "digitaloromiya@gmail.com" || userEmail === "digitalethiopians@gmail.com";
   console.log('[Auth] Checking admin status for:', userId, 'isMaster:', isMaster);
   
   if (isMaster) return true;

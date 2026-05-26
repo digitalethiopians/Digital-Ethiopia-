@@ -34,6 +34,10 @@ export const Navbar = () => {
             <Link to="/services" className="text-sm font-medium text-slate-500 hover:text-emerald-700 transition-colors">
               {t.navServices}
             </Link>
+            <Link to="/national-exam" className="text-sm font-bold text-emerald-800 hover:text-emerald-900 transition-colors bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">
+              {/* @ts-ignore */}
+              {t.navExamPortal}
+            </Link>
             <Link to="/verify" className="flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-emerald-700 transition-colors">
               <ShieldCheck className="h-4 w-4" />
               Verify
